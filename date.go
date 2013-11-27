@@ -157,7 +157,8 @@ func (d Date) NthWeekday() (nth int) {
 	return
 }
 
-// 国民の祝日ならtrueと祝日名を返す。振替休日はチェックしない。
+// 国民の祝日ならtrueと祝日を返す。
+// 振替休日と国民の休日はチェックしない。
 func (d Date) RealHoliday() (isHoliday bool, holiday NamedHoliday) {
 	for holiday, f := range NAMED_HOLIDAYS {
 		if f(d) {
@@ -204,9 +205,8 @@ func (d Date) IsSandwitched() (isHoliday bool) {
 	return
 }
 
-// 祝日ならtrueと祝日名を返す。
-// 振替休日の祝日名は"振替休日"
-// 国民の休日の祝日名は"国民の休日"
+// 祝日ならtrueと祝日を返す。
+// 振替休日と国民の休日もチェックする
 func (d Date) Holiday() (isHoliday bool, holiday NamedHoliday) {
 	if isHoliday, holiday = d.RealHoliday(); isHoliday {
 		return
