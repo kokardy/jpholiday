@@ -23,7 +23,7 @@ func main() {
 	day := jp.NewDate(2013, 5, 4)
 	isHoliday, holiday := day.Holiday()
 	if isHoliday {
-		fmt.Printf("%s is %s \n", day, holiday)
+		fmt.Printf("%s is %s \n", day, holiday) //2013-05-04 is みどりの日
 	}
 }
 ```
