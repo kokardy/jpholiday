@@ -24,26 +24,33 @@ const (
 	BUNKA                     = iota
 	KINROKANSHA               = iota
 	TENNOTANJOBI              = iota
+
+	//振替休日
+	FURIKAEKYUJITSU NamedHoliday = iota
+	//国民の休日
+	KOKUMINNOKYUJITSU NamedHoliday = iota
 )
 
 // 祝日の名前マップ
 var (
 	HOLIDAY_NAMES = map[NamedHoliday]string{
-		GANTAN:       "元旦",
-		SEIJIN:       "成人の日",
-		KENKOKUKINEN: "建国記念の日",
-		SHUNBUN:      "春分の日",
-		SHOWA:        "昭和の日",
-		KENPOKINEN:   "憲法記念日",
-		MIDORI:       "みどりの日",
-		KODOMO:       "こどもの日",
-		UMI:          "海の日",
-		KEIRO:        "敬老の日",
-		SHUBUN:       "秋分の日",
-		TAIIKU:       "体育の日",
-		BUNKA:        "文化の日",
-		KINROKANSHA:  "勤労感謝の日",
-		TENNOTANJOBI: "天皇誕生日",
+		GANTAN:            "元旦",
+		SEIJIN:            "成人の日",
+		KENKOKUKINEN:      "建国記念の日",
+		SHUNBUN:           "春分の日",
+		SHOWA:             "昭和の日",
+		KENPOKINEN:        "憲法記念日",
+		MIDORI:            "みどりの日",
+		KODOMO:            "こどもの日",
+		UMI:               "海の日",
+		KEIRO:             "敬老の日",
+		SHUBUN:            "秋分の日",
+		TAIIKU:            "体育の日",
+		BUNKA:             "文化の日",
+		KINROKANSHA:       "勤労感謝の日",
+		TENNOTANJOBI:      "天皇誕生日",
+		FURIKAEKYUJITSU:   "振替休日",
+		KOKUMINNOKYUJITSU: "国民の休日",
 	}
 )
 
@@ -103,12 +110,13 @@ var (
 )
 
 func init() {
-
+	//春分の日のリストを初期化
 	for i, day := range SHUNBUN_DAYS {
 		year := i + 2000
 		SHUNBUN_LIST[NewDate(year, 3, day)] = struct{}{}
 	}
 
+	//秋分の日のリストを初期化
 	for i, day := range SHUBUN_DAYS {
 		year := i + 2000
 		SHUBUN_LIST[NewDate(year, 9, day)] = struct{}{}
@@ -150,15 +158,16 @@ func (d Date) NthWeekday() (nth int) {
 }
 
 // 国民の祝日ならtrueと祝日名を返す。振替休日はチェックしない。
-func (d Date) RealHoliday() (isHoliday bool, name string) {
-	for holiday_name, f := range NAMED_HOLIDAYS {
+func (d Date) RealHoliday() (isHoliday bool, holiday NamedHoliday) {
+	for holiday, f := range NAMED_HOLIDAYS {
 		if f(d) {
-			isHoliday = true
-			name = holiday_name.String()
-			return
+			if holiday == MIDORI && d.Year() < 2007 {
+				return false, -1
+			}
+			return true, holiday
 		}
 	}
-	return false, ""
+	return false, -1
 }
 
 // 振り替え休日ならtrue otherwise false
@@ -178,16 +187,37 @@ func (d Date) AlternativeHoliday() (isHoliday bool) {
 	return false
 }
 
-// 祝日ならtrueと祝日名を返す。振替休日の祝日名は"振替休日"
-func (d Date) Holiday() (isHoliday bool, name string) {
-	if isHoliday, name = d.RealHoliday(); isHoliday {
+// 国民の休日ならtrue otheriwise false
+func (d Date) IsSandwitched() (isHoliday bool) {
+	if dok, _ := d.RealHoliday(); dok {
+		return false
+	}
+	yesterday := d.Yesterday()
+	tommorow := d.Tommorow()
+	yok, _ := yesterday.RealHoliday()
+	tok, _ := tommorow.RealHoliday()
+	if yok && tok {
+		isHoliday = true
+	} else {
+		isHoliday = false
+	}
+	return
+}
+
+// 祝日ならtrueと祝日名を返す。
+// 振替休日の祝日名は"振替休日"
+// 国民の休日の祝日名は"国民の休日"
+func (d Date) Holiday() (isHoliday bool, holiday NamedHoliday) {
+	if isHoliday, holiday = d.RealHoliday(); isHoliday {
 		return
 	} else {
 		if d.AlternativeHoliday() {
-			return true, "振替休日"
+			return true, FURIKAEKYUJITSU
+		} else if d.IsSandwitched() {
+			return true, KOKUMINNOKYUJITSU
 		}
 	}
-	return false, ""
+	return false, -1
 }
 
 // 1日前のDateを返す
