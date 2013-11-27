@@ -1,4 +1,4 @@
-package holiday
+package jpholiday
 
 // 秋分の日リスト。予測を含む。init()で初期化
 var SHUBUN_LIST = map[Date]struct{}{}

@@ -1,4 +1,4 @@
-package holiday
+package jpholiday
 
 import (
 	"log"
