@@ -80,3 +80,18 @@ func TestKokumin(t *testing.T) {
 		}
 	}
 }
+
+//山の日
+func TestYamanohi(t *testing.T) {
+
+	d := NewDate
+	days := []Date{
+		d(2016, 8, 11),
+		d(2017, 8, 11),
+	}
+	for _, day := range days {
+		if isholiday, holiday := day.Holiday(); !isholiday {
+			t.Fatalf("day:%s must be 山の日 but %s", day, holiday)
+		}
+	}
+}
