@@ -24,6 +24,7 @@ const (
 	BUNKA                     = iota
 	KINROKANSHA               = iota
 	TENNOTANJOBI              = iota
+	YAMA                      = iota
 
 	//振替休日
 	FURIKAEKYUJITSU NamedHoliday = iota
@@ -51,6 +52,7 @@ var (
 		TENNOTANJOBI:      "天皇誕生日",
 		FURIKAEKYUJITSU:   "振替休日",
 		KOKUMINNOKYUJITSU: "国民の休日",
+		YAMA:              "山の日",
 	}
 )
 
@@ -106,6 +108,7 @@ var (
 		BUNKA:        SHCF(11, 3),
 		KINROKANSHA:  SHCF(11, 23),
 		TENNOTANJOBI: SHCF(12, 23),
+		YAMA:         SHCF(8, 11),
 	}
 )
 
