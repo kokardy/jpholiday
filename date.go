@@ -93,22 +93,23 @@ var (
 var (
 	// 祝日チェッカー関数のmap
 	NAMED_HOLIDAYS = map[NamedHoliday]func(Date) bool{
-		GANTAN:       SHCF(1, 1),
-		SEIJIN:       DHCF(1, 2, time.Monday),
-		KENKOKUKINEN: SHCF(2, 11),
-		SHUNBUN:      ShunbunCheker,
-		SHOWA:        SHCF(4, 29),
-		KENPOKINEN:   SHCF(5, 3),
-		MIDORI:       SHCF(5, 4),
-		KODOMO:       SHCF(5, 5),
-		UMI:          DHCF(7, 3, time.Monday),
-		KEIRO:        DHCF(9, 3, time.Monday),
-		SHUBUN:       ShubunCheker,
-		TAIIKU:       DHCF(10, 2, time.Monday),
-		BUNKA:        SHCF(11, 3),
-		KINROKANSHA:  SHCF(11, 23),
-		TENNOTANJOBI: SHCF(12, 23),
-		YAMA:         SHCF(8, 11),
+		GANTAN:        SHCF(1, 1),
+		SEIJIN:        DHCF(1, 2, time.Monday),
+		KENKOKUKINEN:  SHCF(2, 11),
+		SHUNBUN:       ShunbunCheker,
+		SHOWA:         SHCF(4, 29),
+		KENPOKINEN:    SHCF(5, 3),
+		MIDORI:        SHCF(5, 4),
+		KODOMO:        SHCF(5, 5),
+		UMI:           DHCF(7, 3, time.Monday),
+		KEIRO:         DHCF(9, 3, time.Monday),
+		SHUBUN:        ShubunCheker,
+		TAIIKU:        DHCF(10, 2, time.Monday),
+		BUNKA:         SHCF(11, 3),
+		KINROKANSHA:   SHCF(11, 23),
+		TENNOTANJOBI:  SHCF(12, 23),
+		TENNOTANJOBI2: SHCF(2, 23),
+		YAMA:          SHCF(8, 11),
 	}
 )
 
@@ -165,6 +166,16 @@ func (d Date) NthWeekday() (nth int) {
 func (d Date) RealHoliday() (isHoliday bool, holiday NamedHoliday) {
 	for holiday, f := range NAMED_HOLIDAYS {
 		if f(d) {
+			//2019以降は退位のため天皇誕生日変更
+			//さらに2019は天皇誕生日は祝日ではない
+			if holiday == TENNOTANJOBI && d.Year() > 2019 {
+				return false, -1
+			}
+			if holiday == TENNOTANJOBI2 && d.Year() < 2019 {
+				return false, -1
+			}
+
+			//緑の日は2008以降
 			if holiday == MIDORI && d.Year() < 2007 {
 				return false, -1
 			}
