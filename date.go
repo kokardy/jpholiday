@@ -128,6 +128,28 @@ func init() {
 
 }
 
+//Rangeは祝日の有効期間を表す
+type Range struct {
+	Start Date
+	End   Date
+}
+
+func NewRange(d1, d2 Date) {
+	return Range{d1, d2}
+}
+
+//Range.Containsは日付を引数にとって範囲にあればtrue otherwise false
+func (r Range) Contains(d Date) (b bool) {
+	start := r.Start
+	end := r.End
+	if start.Before(d) && end.After(d) {
+		b = true
+	} else {
+		b = false
+	}
+	return
+}
+
 // 祝日判定用日付構造体。
 // 時間以下のデータは無視する。
 // NewDate, TimeToDateでオブジェクト作成することで時間以下のデータをzero-fillして作る。
