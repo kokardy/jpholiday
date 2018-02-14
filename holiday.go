@@ -71,33 +71,37 @@ var (
 	SHCF           = StaticHolidayCheckerFactory     // Alias
 	HCF            = HolidayCheckerFactory           // Alias
 	EVER           = NewDate(2999, 12, 31)
-	LAWDAY         = NewDate(1948, 1, 1) //祝日法
 )
 var (
 	// 祝日チェッカー関数のmap
 	NAMED_HOLIDAYS = map[NamedHoliday]func(Date) bool{
-		GANTAN:        SHCF(1, 1, NewRange(LAWDAY, EVER)),
-		SEIJIN:        SHCF(1, 15, NewRange(LAWDAY, NewDate(1999, 12, 31))),
-		SEIJIN2:       DHCF(1, 2, time.Monday, NewRange(NewDate(2000, 1, 1), EVER)),
-		KENKOKUKINEN:  SHCF(2, 11, NewRange(NewDate(1966, 1, 1), EVER)),
-		SHUNBUN:       ShunbunCheker,
-		SHOWA:         SHCF(4, 29, NewRange(NewDate(2007, 1, 1), EVER)),
-		KENPOKINEN:    SHCF(5, 3, NewRange(LAWDAY, EVER)),
-		MIDORI:        SHCF(4, 29, NewRange(NewDate(1989, 1, 1), NewDate(2006, 12, 31))),
-		MIDORI2:       SHCF(5, 4, NewRange(NewDate(2007, 1, 1), EVER)),
-		KODOMO:        SHCF(5, 5, NewRange(LAWDAY, EVER)),
-		UMI:           SHCF(7, 20, NewRange(NewDate(1996, 1, 1), NewDate(2002, 12, 31))),
-		UMI2:          DHCF(7, 3, time.Monday, NewRange(NewDate(2003, 1, 1), EVER)),
-		KEIRO:         SHCF(9, 15, NewRange(LAWDAY, NewDate(2002, 12, 1))),
-		KEIRO2:        DHCF(9, 3, time.Monday, NewRange(NewDate(2003, 1, 1), EVER)),
-		SHUBUN:        ShubunCheker,
-		TAIIKU:        SHCF(10, 10, NewRange(LAWDAY, NewDate(1999, 12, 31))),
-		TAIIKU2:       DHCF(10, 2, time.Monday, NewRange(NewDate(2000, 1, 1), EVER)),
-		BUNKA:         SHCF(11, 3, NewRange(LAWDAY, EVER)),
-		KINROKANSHA:   SHCF(11, 23, NewRange(LAWDAY, EVER)),
-		TENNOTANJOBI:  SHCF(12, 23, NewRange(NewDate(1989, 1, 1), NewDate(2018, 12, 31))),
-		TENNOTANJOBI2: SHCF(2, 23, NewRange(NewDate(2020, 1, 1), EVER)),
-		YAMA:          SHCF(8, 11, NewRange(NewDate(2016, 1, 1), EVER)),
+		GANTAN: SHCF(1, 1, NewRange(LAWDAY, EVER)),
+		SEIJIN: HCF(
+			SHCF(1, 15, NewRange(LAWDAY, NewDate(1999, 12, 31))),
+			DHCF(1, 2, time.Monday, NewRange(NewDate(2000, 1, 1), EVER))),
+		KENKOKUKINEN: SHCF(2, 11, NewRange(NewDate(1966, 1, 1), EVER)),
+		SHUNBUN:      ShunbunCheker,
+		SHOWA:        SHCF(4, 29, NewRange(NewDate(2007, 1, 1), EVER)),
+		KENPOKINEN:   SHCF(5, 3, NewRange(LAWDAY, EVER)),
+		MIDORI: HCF(
+			SHCF(4, 29, NewRange(NewDate(1989, 1, 1), NewDate(2006, 12, 31))),
+			SHCF(5, 4, NewRange(NewDate(2007, 1, 1), EVER))),
+		KODOMO: SHCF(5, 5, NewRange(LAWDAY, EVER)),
+		UMI: HCF(
+			SHCF(7, 20, NewRange(NewDate(1996, 1, 1), NewDate(2002, 12, 31))),
+			DHCF(7, 3, time.Monday, NewRange(NewDate(2003, 1, 1), EVER))),
+		KEIRO: HCF(SHCF(9, 15, NewRange(LAWDAY, NewDate(2002, 12, 1))),
+			DHCF(9, 3, time.Monday, NewRange(NewDate(2003, 1, 1), EVER))),
+		SHUBUN: ShubunCheker,
+		TAIIKU: HCF(
+			SHCF(10, 10, NewRange(LAWDAY, NewDate(1999, 12, 31))),
+			DHCF(10, 2, time.Monday, NewRange(NewDate(2000, 1, 1), EVER))),
+		BUNKA:       SHCF(11, 3, NewRange(LAWDAY, EVER)),
+		KINROKANSHA: SHCF(11, 23, NewRange(LAWDAY, EVER)),
+		TENNOTANJOBI: HCF(
+			SHCF(12, 23, NewRange(NewDate(1989, 1, 1), NewDate(2018, 12, 31))),
+			SHCF(2, 23, NewRange(NewDate(2020, 1, 1), EVER))),
+		YAMA: SHCF(8, 11, NewRange(NewDate(2016, 1, 1), EVER)),
 	}
 )
 
