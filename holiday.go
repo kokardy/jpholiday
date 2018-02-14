@@ -69,6 +69,7 @@ var (
 	LOCATION_JP, _ = time.LoadLocation("Asia/Tokyo") // Japan Locale
 	DHCF           = DynamicHolidayCheckerFactory    // Alias
 	SHCF           = StaticHolidayCheckerFactory     // Alias
+	HCF            = HolidayCheckerFactory           // Alias
 	EVER           = NewDate(2999, 12, 31)
 	LAWDAY         = NewDate(1948, 1, 1) //祝日法
 )
@@ -128,6 +129,19 @@ func StaticHolidayCheckerFactory(month time.Month, day int, period Range) (f fun
 		}
 		if month == d.Month() && day == d.Day() {
 			return true
+		}
+		return false
+	}
+	return
+}
+
+// 祝日判定関数のWrapper
+func HolidayChekerFactory(funcs ...func(Date) bool) (f func(Date) bool) {
+	f = func(d Date) book {
+		for _, ff := range funcs {
+			if ff(d) {
+				return true
+			}
 		}
 		return false
 	}
