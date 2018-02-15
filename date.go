@@ -43,19 +43,22 @@ func (d Date) NthWeekday() (nth int) {
 func (d Date) RealHoliday() (isHoliday bool, holiday NamedHoliday) {
 	for holiday, f := range NAMED_HOLIDAYS {
 		if f(d) {
-			//2019以降は退位のため天皇誕生日変更
-			//さらに2019は天皇誕生日は祝日ではない
-			if holiday == TENNOTANJOBI && d.Year() > 2019 {
-				return false, -1
-			}
-			if holiday == TENNOTANJOBI2 && d.Year() < 2019 {
-				return false, -1
-			}
 
-			//緑の日は2008以降
-			if holiday == MIDORI && d.Year() < 2007 {
-				return false, -1
-			}
+			/*
+				//2019以降は退位のため天皇誕生日変更
+				//さらに2019は天皇誕生日は祝日ではない
+				if holiday == TENNOTANJOBI && d.Year() > 2019 {
+					return false, -1
+				}
+				if holiday == TENNOTANJOBI2 && d.Year() < 2019 {
+					return false, -1
+				}
+
+				//緑の日は2008以降
+				if holiday == MIDORI && d.Year() < 2007 {
+					return false, -1
+				}
+			*/
 			return true, holiday
 		}
 	}

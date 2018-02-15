@@ -6,28 +6,22 @@ import "time"
 type NamedHoliday int
 
 const (
-	GANTAN        NamedHoliday = iota
-	SEIJIN                     = iota
-	SEIJIN2                    = iota
-	KENKOKUKINEN               = iota
-	SHUNBUN                    = iota
-	SHOWA                      = iota
-	KENPOKINEN                 = iota
-	MIDORI                     = iota
-	MIDORI2                    = iota
-	KODOMO                     = iota
-	UMI                        = iota
-	UMI2                       = iota
-	KEIRO                      = iota
-	KEIRO2                     = iota
-	SHUBUN                     = iota
-	TAIIKU                     = iota
-	TAIIKU2                    = iota
-	BUNKA                      = iota
-	KINROKANSHA                = iota
-	TENNOTANJOBI               = iota
-	TENNOTANJOBI2              = iota
-	YAMA                       = iota
+	GANTAN       NamedHoliday = iota
+	SEIJIN                    = iota
+	KENKOKUKINEN              = iota
+	SHUNBUN                   = iota
+	SHOWA                     = iota
+	KENPOKINEN                = iota
+	MIDORI                    = iota
+	KODOMO                    = iota
+	UMI                       = iota
+	KEIRO                     = iota
+	SHUBUN                    = iota
+	TAIIKU                    = iota
+	BUNKA                     = iota
+	KINROKANSHA               = iota
+	TENNOTANJOBI              = iota
+	YAMA                      = iota
 
 	//振替休日
 	FURIKAEKYUJITSU NamedHoliday = iota
@@ -40,25 +34,19 @@ var (
 	HOLIDAY_NAMES = map[NamedHoliday]string{
 		GANTAN:            "元旦",
 		SEIJIN:            "成人の日",
-		SEIJIN2:           "成人の日",
 		KENKOKUKINEN:      "建国記念の日",
 		SHUNBUN:           "春分の日",
 		SHOWA:             "昭和の日",
 		KENPOKINEN:        "憲法記念日",
 		MIDORI:            "みどりの日",
-		MIDORI2:           "みどりの日",
 		KODOMO:            "こどもの日",
 		UMI:               "海の日",
-		UMI2:              "海の日",
 		KEIRO:             "敬老の日",
-		KEIRO2:            "敬老の日",
 		SHUBUN:            "秋分の日",
 		TAIIKU:            "体育の日",
-		TAIIKU2:           "体育の日",
 		BUNKA:             "文化の日",
 		KINROKANSHA:       "勤労感謝の日",
 		TENNOTANJOBI:      "天皇誕生日",
-		TENNOTANJOBI2:     "天皇誕生日",
 		FURIKAEKYUJITSU:   "振替休日",
 		KOKUMINNOKYUJITSU: "国民の休日",
 		YAMA:              "山の日",
@@ -71,6 +59,7 @@ var (
 	SHCF           = StaticHolidayCheckerFactory     // Alias
 	HCF            = HolidayCheckerFactory           // Alias
 	EVER           = NewDate(2999, 12, 31)
+	LAWDAY         = NewDate(1948, 7, 20)
 )
 var (
 	// 祝日チェッカー関数のmap
@@ -90,7 +79,8 @@ var (
 		UMI: HCF(
 			SHCF(7, 20, NewRange(NewDate(1996, 1, 1), NewDate(2002, 12, 31))),
 			DHCF(7, 3, time.Monday, NewRange(NewDate(2003, 1, 1), EVER))),
-		KEIRO: HCF(SHCF(9, 15, NewRange(LAWDAY, NewDate(2002, 12, 1))),
+		KEIRO: HCF(
+			SHCF(9, 15, NewRange(LAWDAY, NewDate(2002, 12, 1))),
 			DHCF(9, 3, time.Monday, NewRange(NewDate(2003, 1, 1), EVER))),
 		SHUBUN: ShubunCheker,
 		TAIIKU: HCF(
@@ -99,7 +89,8 @@ var (
 		BUNKA:       SHCF(11, 3, NewRange(LAWDAY, EVER)),
 		KINROKANSHA: SHCF(11, 23, NewRange(LAWDAY, EVER)),
 		TENNOTANJOBI: HCF(
-			SHCF(12, 23, NewRange(NewDate(1989, 1, 1), NewDate(2018, 12, 31))),
+			SHCF(4, 29, NewRange(LAWDAY, NewDate(1989, 2, 16))),
+			SHCF(12, 23, NewRange(NewDate(1989, 2, 17), NewDate(2018, 12, 31))),
 			SHCF(2, 23, NewRange(NewDate(2020, 1, 1), EVER))),
 		YAMA: SHCF(8, 11, NewRange(NewDate(2016, 1, 1), EVER)),
 	}
@@ -140,8 +131,8 @@ func StaticHolidayCheckerFactory(month time.Month, day int, period Range) (f fun
 }
 
 // 祝日判定関数のWrapper
-func HolidayChekerFactory(funcs ...func(Date) bool) (f func(Date) bool) {
-	f = func(d Date) book {
+func HolidayCheckerFactory(funcs ...func(Date) bool) (f func(Date) bool) {
+	f = func(d Date) bool {
 		for _, ff := range funcs {
 			if ff(d) {
 				return true

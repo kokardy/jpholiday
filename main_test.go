@@ -25,22 +25,22 @@ func TestDate(t *testing.T) {
 		TENNOTANJOBI,
 	}
 
-	ff := func(year int) func(month time.Month, day int) Date {
+	year_maker := func(year int) func(month time.Month, day int) Date {
 		f := func(month time.Month, day int) Date {
 			return NewDate(year, month, day)
 		}
 		return f
 	}
 	var (
-		f    func(time.Month, int) Date
+		d    func(time.Month, int) Date
 		days []Date
 	)
 
 	//2011年の祝日チェック
-	f = ff(2011)
+	d = year_maker(2011)
 	days = []Date{
-		f(1, 1), f(1, 10), f(2, 11), f(3, 21), f(4, 29), f(5, 3), f(5, 4), f(5, 5),
-		f(7, 18), f(9, 19), f(9, 23), f(10, 10), f(11, 3), f(11, 23), f(12, 23),
+		d(1, 1), d(1, 10), d(2, 11), d(3, 21), d(4, 29), d(5, 3), d(5, 4), d(5, 5),
+		d(7, 18), d(9, 19), d(9, 23), d(10, 10), d(11, 3), d(11, 23), d(12, 23),
 	}
 	for i, day := range days {
 		_, holiday := day.Holiday()
@@ -94,4 +94,40 @@ func TestYamanohi(t *testing.T) {
 			t.Fatalf("day:%s must be 山の日 but %s", day, holiday)
 		}
 	}
+}
+
+//天皇誕生日
+func TestTennotanjobi(t *testing.T) {
+
+	d := NewDate
+	days := []Date{
+		//祝日法は1948/07/20なので1948は天皇誕生日ではなく天長節
+		d(1949, 4, 29), //昭和
+		d(1960, 4, 29),
+		d(1988, 4, 29),
+		d(1989, 12, 23), //平成
+		d(2000, 12, 23),
+		d(2001, 12, 23),
+		d(2002, 12, 23),
+		d(2006, 12, 23),
+		d(2020, 2, 23), //2020年以降
+		d(2023, 2, 23),
+	}
+	for _, day := range days {
+		if isholiday, holiday := day.Holiday(); !isholiday {
+			t.Fatalf("day:%s must be 天皇誕生日 but %s", day, holiday)
+		}
+	}
+
+	days = []Date{
+		d(2019, 12, 23),
+		d(2019, 2, 23),
+	}
+
+	for _, day := range days {
+		if isholiday, holiday := day.Holiday(); isholiday {
+			t.Fatalf("day:%s must not be 天皇誕生日 but %s", day, holiday)
+		}
+	}
+
 }
